@@ -391,7 +391,7 @@ int bootstrap()
     
     STRAPLOG("Status: Bootstrap Successful");
     
-    if(![fm fileExistsAtPath:jbroot(@"/.enableSB")])
+    if(![fm fileExistsAtPath:jbroot(@"/.enableSB")] && NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 17)
     {
         runSBINJECTOR = NO;
         ASSERT(StepIncrement() == YES);

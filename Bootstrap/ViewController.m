@@ -490,15 +490,27 @@ void bootstrapAction()
         }
      
         if(runSBINJECTOR == NO) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Rerun") message:Localized(@"Stage 1 is complete. After your device resprings (will auto respring in 7 secs), rerun BootStrap G3n3sis again to enable SpringBoard tweaks") preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-                [generator impactOccurred];
-                [AppDelegate addLogText:Localized(@"respring now...")]; sleep(7);
-                respringAction();
-                return;
-            }]];
-            
-        [AppDelegate showAlert:alert];
+            if(NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 17) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Rerun") message:Localized(@"Stage 1 is complete. After your device resprings (will auto respring in 7 secs), rerun BootStrap G3n3sis again to enable SpringBoard tweaks") preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                    [generator impactOccurred];
+                    [AppDelegate addLogText:Localized(@"respring now...")]; sleep(7);
+                    respringAction();
+                    return;
+                }]];
+                
+                [AppDelegate showAlert:alert];
+            } else {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Rerun") message:Localized(@"Your device has been Bootstrapped. SpringBoard Injection is not supported for your version, however you may still be able to use tweaks in apps. (you will auto respring in 7 secs)") preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                    [generator impactOccurred];
+                    [AppDelegate addLogText:Localized(@"respring now...")]; sleep(7);
+                    respringAction();
+                    return;
+                }]];
+                
+                [AppDelegate showAlert:alert];
+            }
 
         [generator impactOccurred];
         [AppDelegate addLogText:Localized(@"respringing now...")]; sleep(7);
@@ -509,8 +521,17 @@ void bootstrapAction()
         } else {
             [AppDelegate addLogText:Localized(@"*** Running Stage 2 ***")];
             // we have to make sure we spawn ourselves as root, otherwise copying over launchd & SpringBoard will fail
-            int statusinject = spawnRoot(NSBundle.mainBundle.executablePath, @[@"injection"], &log, &err);
-            
+            //const char *execpath = NSBundle.mainBundle.executablePath.fileSystemRepresentation;
+            //int statusinject = spawnRoot(@(execpath), @[@"injection"], &log, &err);
+            const char* argv[] = {NSBundle.mainBundle.executablePath.fileSystemRepresentation, "injection", NULL};
+            int statusinject = spawn(argv[0], argv, environ, ^(char* outstr, int length){
+                NSString *str = [[NSString alloc] initWithBytes:outstr length:length encoding:NSASCIIStringEncoding];
+                [AppDelegate addLogText:str];
+            }, ^(char* errstr, int length){
+                NSString *str = [[NSString alloc] initWithBytes:errstr length:length encoding:NSASCIIStringEncoding];
+                [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: %@\n",str]];
+            });
+
             // bool replaced = enable_SBInjection(kfd, 1); // initiate SpringBoard Injection
             if(statusinject != 0) {
                 [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup SpringBoard Injection. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
@@ -551,8 +572,8 @@ void unbootstrapAction()
 
             NSString* log=nil;
             NSString* err=nil;
-            if(access(jbroot(@"/.enableSB").UTF8String, R_OK) == 0) remove(jbroot(@"/.enableSB").UTF8String);
-            remove(jbroot(@"/.enabledSB").UTF8String);
+            if(access(jbroot(@"/.enableSB").fileSystemRepresentation, R_OK) == 0) remove(jbroot(@"/.enableSB").fileSystemRepresentation);
+            remove(jbroot(@"/.enabledSB").fileSystemRepresentation);
             int status = spawnRoot(NSBundle.mainBundle.executablePath, @[@"unbootstrap"], &log, &err);
             
             [AppDelegate dismissHud];
