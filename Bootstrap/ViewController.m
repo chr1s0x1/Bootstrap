@@ -501,7 +501,7 @@ void bootstrapAction()
                 
                 [AppDelegate showAlert:alert];
             } else {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Rerun") message:Localized(@"Your device has been Bootstrapped. SpringBoard Injection is not supported for your version, however you may still be able to use tweaks in apps. (you will auto respring in 7 secs)") preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Completed") message:Localized(@"Your device has been Bootstrapped. SpringBoard Injection is not supported for your version, however you may still be able to use tweaks in apps. (you will auto respring in 7 secs)") preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                     [generator impactOccurred];
                     [AppDelegate addLogText:Localized(@"respring now...")]; sleep(7);
