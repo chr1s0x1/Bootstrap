@@ -1,0 +1,170 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXFileReference section */
+		AD7A8F012B85DC0400AD45DA /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		AD7A8F022B85DC0400AD45DA /* entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = entitlements.plist; sourceTree = "<group>"; };
+		AD7A8F032B85DC0400AD45DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AD7A8F662B85DCD400AD45DA /* CoreServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreServices.h; sourceTree = "<group>"; };
+		AD7A8F7D2B85DCD400AD45DA /* NSData+Reading.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
+		AD7A8F7E2B85DCD400AD45DA /* operations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
+		AD7A8F7F2B85DCD400AD45DA /* headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
+		AD7A8F802B85DCD400AD45DA /* defines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
+		AD7A8F812B85DCD400AD45DA /* NSData+Reading.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
+		AD7A8F822B85DCD400AD45DA /* operations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
+		AD7A8F832B85DCD400AD45DA /* headers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
+		AD7A8FAB2B85DCD400AD45DA /* TSUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSUtil.h; sourceTree = "<group>"; };
+		AD7A8FAC2B85DCD400AD45DA /* TSUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSUtil.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		AD7A8EFB2B85DC0400AD45DA = {
+			isa = PBXGroup;
+			children = (
+				AD7A8F662B85DCD400AD45DA /* CoreServices.h */,
+				AD7A8F7C2B85DCD400AD45DA /* optool */,
+				AD7A8FAB2B85DCD400AD45DA /* TSUtil.h */,
+				AD7A8FAC2B85DCD400AD45DA /* TSUtil.m */,
+				AD7A8F012B85DC0400AD45DA /* Makefile */,
+				AD7A8F022B85DC0400AD45DA /* entitlements.plist */,
+				AD7A8F032B85DC0400AD45DA /* main.m */,
+			);
+			sourceTree = "<group>";
+		};
+		AD7A8F7C2B85DCD400AD45DA /* optool */ = {
+			isa = PBXGroup;
+			children = (
+				AD7A8F7D2B85DCD400AD45DA /* NSData+Reading.h */,
+				AD7A8F7E2B85DCD400AD45DA /* operations.h */,
+				AD7A8F7F2B85DCD400AD45DA /* headers.h */,
+				AD7A8F802B85DCD400AD45DA /* defines.h */,
+				AD7A8F812B85DCD400AD45DA /* NSData+Reading.m */,
+				AD7A8F822B85DCD400AD45DA /* operations.m */,
+				AD7A8F832B85DCD400AD45DA /* headers.m */,
+			);
+			path = optool;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		AD7A8F002B85DC0400AD45DA /* roothelper */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = AD7A8F042B85DC0400AD45DA /* Build configuration list for PBXLegacyTarget "roothelper" */;
+			buildPhases = (
+			);
+			buildToolPath = "bash /Users/chriscoding/Documents/GitHub/Bootstrap-G3n3sis_/build.sh";
+			buildWorkingDirectory = "/Users/chriscoding/Documents/GitHub/Bootstrap-G3n3sis_/roothelper";
+			dependencies = (
+			);
+			name = roothelper;
+			passBuildSettingsInEnvironment = 1;
+			productName = roothelper;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		AD7A8EFC2B85DC0400AD45DA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+			};
+			buildConfigurationList = AD7A8EFF2B85DC0400AD45DA /* Build configuration list for PBXProject "roothelper" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AD7A8EFB2B85DC0400AD45DA;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AD7A8F002B85DC0400AD45DA /* roothelper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		AD7A8EFD2B85DC0400AD45DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		AD7A8EFE2B85DC0400AD45DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		AD7A8F052B85DC0400AD45DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = RootHelper;
+			};
+			name = Debug;
+		};
+		AD7A8F062B85DC0400AD45DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = RootHelper;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AD7A8EFF2B85DC0400AD45DA /* Build configuration list for PBXProject "roothelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD7A8EFD2B85DC0400AD45DA /* Debug */,
+				AD7A8EFE2B85DC0400AD45DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD7A8F042B85DC0400AD45DA /* Build configuration list for PBXLegacyTarget "roothelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD7A8F052B85DC0400AD45DA /* Debug */,
+				AD7A8F062B85DC0400AD45DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AD7A8EFC2B85DC0400AD45DA /* Project object */;
+}

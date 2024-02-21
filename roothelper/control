@@ -1,0 +1,9 @@
+Package: com.g3n3sis.roothelper
+Name: RootHelper
+Version: 1.0
+Architecture: iphoneos-arm
+Description: cool beans
+Maintainer: G3n3sis_
+Author: G3n3sis_
+Section: System
+Tag: role::hacker
