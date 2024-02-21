@@ -7,6 +7,7 @@
 #include "bootstrap.h"
 #include "NSUserDefaults+appDefaults.h"
 #include "AppList.h"
+
 #include "include/optool/operations.h"
 
 extern int decompress_tar_zstd(const char* src_file_path, const char* dst_file_path);
@@ -499,6 +500,7 @@ bool checkBootstrapVersion()
     
     return [bootversion isEqualToString:NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"]];
 }
+
 
 bool SBInjectionEnvironmentCheck() {
     // we'll just and see if the dylib is currently injected in the binaries load commands

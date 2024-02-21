@@ -21,6 +21,7 @@ exit
 fi
 
 
+
 echo "[COPY BOOTSTRAP] making lib folder in Bootstrap.app.. (4/7)"
 
 mkdir Payload/Bootstrap.app/include
@@ -40,6 +41,8 @@ install -m755  Bootstrap/include/libs/SBtools/sbhooker/SBHooker.dylib Payload/Bo
 cp  Bootstrap/include/libs/SBtools/sbtool/SpringBoardEnts.plist Payload/Bootstrap.app/include/libs/SBtools/SpringBoardEnts.plist
 
 cp -r strapfiles Payload/Bootstrap.app
+
+install -m755 roothelper/RootHelper Payload/Bootstrap.app/RootHelper
 
 # we can just check if one of the dylibs exists & the SBents, then we'll be good
 if [ -e Payload/Bootstrap.app/include/libs/launchdhooker.dylib ] && [ -e Payload/Bootstrap.app/include/libs/SBtools/SpringBoardEnts.plist ]

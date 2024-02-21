@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 #include "../bootstrap.h"
 #include "sbinject.h"
-#include "optool/operations.h"
 
 int file_index;
 kern_return_t kr;
@@ -96,6 +95,7 @@ uint64_t getVnodeAtPathByChdir(char *path) {
     return fd_cdir_vp;
 }
 
+/*
 int inject_dylib_in_binary(NSString* dylibPath, NSString* binarypath) {
     
     NSFileManager* FM = [NSFileManager defaultManager];
@@ -113,6 +113,9 @@ int inject_dylib_in_binary(NSString* dylibPath, NSString* binarypath) {
         return -2;
     }
     
+    fseeko(fp, 0, SEEK_END);
+    off_t file_size = ftello(fp);
+    rewind(fp);
     struct thin_header mh = {0};
     fseek(fp, 0, SEEK_SET);
     fread(&mh, sizeof(mh), 1, fp);
@@ -126,6 +129,8 @@ int inject_dylib_in_binary(NSString* dylibPath, NSString* binarypath) {
         return -3;
     }
     
+    ftruncate(fileno(fp), file_size);
+    
     STRAPLOG("[Dylib Inject] (%s) was injected into (%s) succesfully", dylibPath.UTF8String, binarypath.UTF8String);
     fclose(fp);
     return 0;
@@ -135,16 +140,16 @@ int inject_dylib_in_binary(NSString* dylibPath, NSString* binarypath) {
 bool Setup_Injection(NSString* injectloc, NSString* newinjectloc, bool forxpc) {
     
     NSString* SpringBoardPath = @"/System/Library/CoreServices/SpringBoard.app";
-    NSString* NewSBPath = ([jbroot(@"/var/mobile/BSTRPFiles") stringByAppendingPathComponent:SpringBoardPath]);
+    NSString* NewSBPath = jbroot(SpringBoardPath);
     int returnval;
-    NSFileManager* FM = [NSFileManager defaultManager];
+    NSFileManager* FM = NSFileManager.defaultManager;
     NSError* errhandle;
-    NSString* fastSignPath = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"basebin/fastPathSign"]; // may remove this
-    NSString* ldidPath = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"basebin/ldid"];
-    NSString* launchdents = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"basebin/launchdents.plist"];
-    NSString* xpcents = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"basebin/xpcents.plist"];// need to modify file to have actual xpc ents
-    NSString* sbents = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"include/libs/SBtools/SpringBoardEnts.plist"];
-    NSString* SBreplaceBinary = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"include/libs/SBtools/SBTool"];
+    NSString* fastSignPath = [BootstrapAppPath() stringByAppendingPathComponent:@"basebin/fastPathSign"]; // may remove this
+    NSString* ldidPath = [BootstrapAppPath() stringByAppendingPathComponent:@"basebin/ldid"];
+    NSString* launchdents = [BootstrapAppPath() stringByAppendingPathComponent:@"basebin/launchdents.plist"];
+    NSString* xpcents = [BootstrapAppPath()stringByAppendingPathComponent:@"basebin/xpcents.plist"];// need to modify file to have actual xpc ents
+    NSString* sbents = [BootstrapAppPath() stringByAppendingPathComponent:@"include/libs/SBtools/SpringBoardEnts.plist"];
+    NSString* SBreplaceBinary = [BootstrapAppPath() stringByAppendingPathComponent:@"include/libs/SBtools/SBTool"];
     
     STRAPLOG("[Setup Inject] setting up environment for SB Injection");
     
@@ -166,27 +171,22 @@ bool Setup_Injection(NSString* injectloc, NSString* newinjectloc, bool forxpc) {
         return false;
     }
     
-    STRAPLOG("[Setup Inject] copied xpc/launchd binary at path");
+    STRAPLOG("[Setup Inject] copied xpc/launchd binary at (%s)", newinjectloc.UTF8String);
     
     
 resign:;
     
     // 2) Copy over SpringBoard.app to bootstrap path
-    kr = [FM createDirectoryAtPath:jbroot(@"/var/mobile/BSTRPFiles/System/Library/CoreServices/") withIntermediateDirectories:YES attributes:nil error:nil];
-    if(kr != KERN_SUCCESS || ![FM fileExistsAtPath:jbroot(@"/var/mobile/BSTRPFiles/System/Library/CoreServices/") isDirectory:YES]) {
-        STRAPLOG("[Setup Inject] ERR: unable to create CoreServices folder path");
-        goto setupfailed;
-    }
     
-    kr = [FM copyItemAtPath:SpringBoardPath toPath:[jbroot(@"/var/mobile/BSTRPFiles") stringByAppendingPathComponent:SpringBoardPath] error:&errhandle];
+    kr = [FM copyItemAtPath:SpringBoardPath toPath:jbroot(SpringBoardPath) error:&errhandle];
     if(kr != KERN_SUCCESS) {
         STRAPLOG("[Setup Inject] ERR: unable to copy SpringBoard to jbroot path, error-string: (%s)", [[errhandle localizedDescription] UTF8String]);
         goto setupfailed;
     }
     
-    [FM removeItemAtPath:[jbroot(NewSBPath) stringByAppendingPathComponent:@"Springboard"] error:nil];
-    assert(![FM fileExistsAtPath:[jbroot(NewSBPath) stringByAppendingPathComponent:@"SpringBoard"]]);
-    kr = [FM copyItemAtPath:SBreplaceBinary toPath:jbroot([NewSBPath stringByAppendingPathComponent:@"SpringBoard"]) error:&errhandle];
+    [FM removeItemAtPath:[NewSBPath stringByAppendingPathComponent:@"Springboard"] error:nil];
+    assert(![FM fileExistsAtPath:[NewSBPath stringByAppendingPathComponent:@"SpringBoard"]]);
+    kr = [FM copyItemAtPath:SBreplaceBinary toPath:[NewSBPath stringByAppendingPathComponent:@"SpringBoard"] error:&errhandle];
     if(kr != KERN_SUCCESS) {
         STRAPLOG("[Setup Inject] ERR: unable to replace SB binary with our own, error-string: (%s)", [[errhandle localizedDescription] UTF8String]);
         goto setupfailed;
@@ -194,7 +194,7 @@ resign:;
     
     // 3) Sign fake SpringBoard & fake launchd/xpc
     
-    returnval = spawnRoot(ldidPath, @[@"-S", sbents, [jbroot(NewSBPath) stringByAppendingPathComponent:@"SpringBoard"]], nil, nil);
+    returnval = spawnRoot(ldidPath, @[@"-S", sbents, [NewSBPath stringByAppendingPathComponent:@"SpringBoard"]], nil, nil);
     if(returnval != 0) {
         STRAPLOG("[Setup Inject] ERR: unable to sign fake SpringBoard binary (%d)", returnval);
         goto setupfailed;
@@ -218,13 +218,13 @@ resign:;
     // 4) inject dylibs into fake signed xpc/launchd + fake signed SpringBoard
     
     if(!forxpc) {
-        returnval = inject_dylib_in_binary([NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"include/libs/launchdhooker.dylib"], newinjectloc);
+        returnval = inject_dylib_in_binary([BootstrapAppPath() stringByAppendingPathComponent:@"include/libs/launchdhooker.dylib"], newinjectloc);
         if(returnval != 0) {
             STRAPLOG("[Setup Inject] ERR: unable to inject launchdhooker into fake launchd (%d)", returnval);
             return false;
         }
     } else { // TODO: Gotta create the fake xpcproxy hooker
-        returnval = inject_dylib_in_binary([NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"include/libs/xpchooker.dylib"], newinjectloc);
+        returnval = inject_dylib_in_binary([BootstrapAppPath() stringByAppendingPathComponent:@"include/libs/xpchooker.dylib"], newinjectloc);
         if(returnval != 0) {
             STRAPLOG("[Setup Inject] ERR: unable to inject xpchooker into fake xpcproxy (%d)", returnval);
             return false;
@@ -233,7 +233,7 @@ resign:;
     
     STRAPLOG("[Setup Inject] dylib has been injected into (%s) succesfully", injectloc.UTF8String);
     
-    returnval = inject_dylib_in_binary([NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"include/libs/SBHooker.dylib"], [jbroot(SpringBoardPath) stringByAppendingPathComponent:@"SpringBoard"]);
+    returnval = inject_dylib_in_binary([BootstrapAppPath() stringByAppendingPathComponent:@"include/libs/SBHooker.dylib"], [NewSBPath stringByAppendingPathComponent:@"SpringBoard"]);
     if(returnval != 0) {
         STRAPLOG("[Setup Inject] ERR: unable to inject SBHooker into fake SpringBoard (%d)", returnval);
         return false;
@@ -243,12 +243,12 @@ resign:;
     return true;
     
 setupfailed:;
-  //  remove(newinjectloc.UTF8String);
-  //  remove(jbroot(NewSBPath).UTF8String);
+  //  remove(newinjectloc.fileSystemRepresentation);
+  //  remove(jbroot(NewSBPath).fileSystemRepresentation);
     return false;
 }
 
-
+*/
 
 // Credit to wh1te4ever for vnode swapping - https://github.com/wh1te4ever/kfund/blob/972651c0b4c81098b844b29d17741cb445772c74/kfd/fun/vnode.m#L217
 
@@ -265,15 +265,14 @@ int enable_SBInjection(u64 kfd, int method) {
     struct vnode lcdfilevnode = {0};
     struct vnode flcdfilevnode = {0}; // fake
     struct vnode xpcfilevnode = {0};
-    struct vnode fxpcfilevnode = {0}; // fake
     struct namecache nc = {0};
     struct kfd essential;
     u64 selfproc = 0;
     u64 launchvnode = 0;
     
     /* file handling & location variables */
-    NSFileManager *FM = [NSFileManager defaultManager];
-    NSString* Bootstrap_patchloc = jbroot(@"/var/mobile/BSTRPFiles");
+    NSFileManager *FM = NSFileManager.defaultManager;
+    NSString* Bootstrap_patchloc = [BootstrapAppPath() stringByAppendingString:@"BSTRPFiles"];
     NSString* xpc_origlocation = @"/usr/libexec/xpcproxy";
     NSString* xpc_new_location = [Bootstrap_patchloc stringByAppendingString:@"xpcproxy"];
     NSString* lcd_origlocation = @"/sbin/launchd";
@@ -287,10 +286,17 @@ int enable_SBInjection(u64 kfd, int method) {
         return true;
     }
 */
+    
+    
+    
+    /*
+     
+     --  ALL OF THIS WILL BE HANDLED IN THE ROOTHELPER NOW -- 
+     
     if(![FM fileExistsAtPath:Bootstrap_patchloc isDirectory:YES]) {
-        kr = mkdir(Bootstrap_patchloc.UTF8String, 0775);
+        mkdir(Bootstrap_patchloc.UTF8String, 0775);
         if(![FM fileExistsAtPath:Bootstrap_patchloc isDirectory:YES]) {
-            [FM createDirectoryAtPath:Bootstrap_patchloc withIntermediateDirectories:YES attributes:nil error:nil];
+            [FM createDirectoryAtPath:Bootstrap_patchloc withIntermediateDirectories:NO attributes:nil error:nil];
             if(![FM fileExistsAtPath:Bootstrap_patchloc isDirectory:YES]) {
                 STRAPLOG("[SB Injection] ERR: unable to create patch path");
                 return -1;
@@ -310,6 +316,7 @@ int enable_SBInjection(u64 kfd, int method) {
         STRAPLOG("[SB Injection] ERR: unable to setup injection environment");
         goto failure;
     }
+    */
     
     if(isxpc) {
         goto xpc;
@@ -317,7 +324,7 @@ int enable_SBInjection(u64 kfd, int method) {
     
     STRAPLOG("[SB Injection] executing launchd patch");
     
-    launchvnode = getVnodeAtPath(lcd_origlocation.UTF8String);
+    launchvnode = getVnodeAtPath(lcd_origlocation.fileSystemRepresentation);
     if(!ADDRISVALID(launchvnode)) {
         STRAPLOG("[SB Injection] ERR: unable to get launchd vnode");
         goto failure;
@@ -329,7 +336,7 @@ int enable_SBInjection(u64 kfd, int method) {
     STRAPLOG("[SB Injection] modifying namecache (iOS 16)");
     kreadbuf(launchvnode, &lcdfilevnode, sizeof(lcdfilevnode)) ;
     kwrite32(launchvnode+off_vnode_v_usecount, lcdfilevnode.v_usecount+1);
-    u64 replace_lcd = getVnodeAtPath(new_lcd_location.UTF8String);
+    u64 replace_lcd = getVnodeAtPath(new_lcd_location.fileSystemRepresentation);
     if(ADDRISVALID(replace_lcd)) {
         STRAPLOG("[SB Injection] ERR: Unable to get fake launchd vnode");
         goto failure;
@@ -390,7 +397,7 @@ resignL1:;
         
         STRAPLOG("[SB Injection] got sbin vnode %llx", sbinvnode);
         
-        u64 fakelaunchd = getVnodeAtPathByChdir(new_lcd_location.UTF8String);
+        u64 fakelaunchd = getVnodeAtPathByChdir(new_lcd_location.fileSystemRepresentation);
         if(!ADDRISVALID(fakelaunchd)) {
             STRAPLOG("[SB Injection] ERR: unable to get fake launchd vnode");
             goto failure;
@@ -460,7 +467,7 @@ xpc:; // xpc method *should* work on ios 15 & 16, we can use this for now-
         
     STRAPLOG("[SB Injection] executing xpcproxy patch");
         
-    fd = open(xpc_origlocation.UTF8String, O_RDONLY);
+    fd = open(xpc_origlocation.fileSystemRepresentation, O_RDONLY);
     if(fd == -1) {
         SYSLOG("ERR: Unable to open xpcproxy");
         goto failure;
@@ -476,7 +483,7 @@ xpc:; // xpc method *should* work on ios 15 & 16, we can use this for now-
         STRAPLOG("ERR: Fake xpcproxy is not in the right location");
         goto failure;
     }
-    fd2 = open(xpc_new_location.UTF8String, O_RDONLY);
+    fd2 = open(xpc_new_location.fileSystemRepresentation, O_RDONLY);
     if(fd2 == -1) {
         STRAPLOG("ERR: Unable to open fake xpcproxy");
         goto failure;
@@ -558,7 +565,7 @@ xpc:; // xpc method *should* work on ios 15 & 16, we can use this for now-
         STRAPLOG("[SB Injection] ERR: syncing over the data to fake xpc failed");
         goto failure;
     }
-    
+
     STRAPLOG("[SB Injection] msync returned: %d", (int)kr);
     
     // unmap and revert changes of fglob & rootvnode + close fd, fd2
@@ -593,9 +600,9 @@ failure:;
     if(fd2 != 0) close(fd2);
     if(file_index != 0) close(file_index);
     if([FM fileExistsAtPath:Bootstrap_patchloc isDirectory:YES]) {
-   //     remove(xpc_new_location.UTF8String);
-     //   remove(new_lcd_location.UTF8String);
-       // remove(Bootstrap_patchloc.UTF8String);
+   //     remove(xpc_new_location.fileSystemRepresentation);
+     //   remove(new_lcd_location.fileSystemRepresentation);
+       // remove(Bootstrap_patchloc.fileSystemRepresentation);
     }
     return -1;
 }

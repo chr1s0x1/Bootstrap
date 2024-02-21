@@ -54,9 +54,10 @@
 		AD11E94F2B57A19400529403 /* krw.m in Sources */ = {isa = PBXBuildFile; fileRef = AD11E94C2B57A19400529403 /* krw.m */; };
 		AD7A8C502B5CB2F000AD45DA /* sbinject.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8C4F2B5CB2F000AD45DA /* sbinject.m */; };
 		AD7A8D4C2B662E0000AD45DA /* libchoma.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD7A8D4B2B662E0000AD45DA /* libchoma.a */; };
-		AD7A8D552B66F3F000AD45DA /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8D522B66F3F000AD45DA /* NSData+Reading.m */; };
-		AD7A8D562B66F3F000AD45DA /* operations.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8D532B66F3F000AD45DA /* operations.m */; };
-		AD7A8D572B66F3F000AD45DA /* headers.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8D542B66F3F000AD45DA /* headers.m */; };
+		AD7A8FB72B85E91D00AD45DA /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FB42B85E91D00AD45DA /* NSData+Reading.m */; };
+		AD7A8FB82B85E91D00AD45DA /* operations.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FB52B85E91D00AD45DA /* operations.m */; };
+		AD7A8FB92B85E91D00AD45DA /* headers.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FB62B85E91D00AD45DA /* headers.m */; };
+		AD7A8FBB2B85F3E700AD45DA /* fastPathSign in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FBA2B85F3E700AD45DA /* fastPathSign */; };
 		ADD874852B58AF01004B5AF3 /* IOSurface_shared.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD874832B58AF01004B5AF3 /* IOSurface_shared.c */; };
 		ADD874882B58AF0B004B5AF3 /* kwrite_IOSurface.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD874862B58AF0B004B5AF3 /* kwrite_IOSurface.c */; };
 		ADD8748B2B591190004B5AF3 /* kread_IOSurface.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD8748A2B591190004B5AF3 /* kread_IOSurface.c */; };
@@ -204,13 +205,6 @@
 		AD7A8CE82B65D7E300AD45DA /* BufferedStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferedStream.h; sourceTree = "<group>"; };
 		AD7A8CE92B65D7E300AD45DA /* PatchFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PatchFinder.h; sourceTree = "<group>"; };
 		AD7A8D4B2B662E0000AD45DA /* libchoma.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libchoma.a; sourceTree = "<group>"; };
-		AD7A8D4E2B66F3F000AD45DA /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
-		AD7A8D4F2B66F3F000AD45DA /* operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
-		AD7A8D502B66F3F000AD45DA /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
-		AD7A8D512B66F3F000AD45DA /* defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
-		AD7A8D522B66F3F000AD45DA /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
-		AD7A8D532B66F3F000AD45DA /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
-		AD7A8D542B66F3F000AD45DA /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
 		AD7A8D5A2B6A2C1900AD45DA /* endpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = endpoint.h; sourceTree = "<group>"; };
 		AD7A8D5B2B6A2C1900AD45DA /* debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = debug.h; sourceTree = "<group>"; };
 		AD7A8D5C2B6A2C1900AD45DA /* listener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = listener.h; sourceTree = "<group>"; };
@@ -225,6 +219,28 @@
 		AD7A8D652B6A2C1900AD45DA /* spawn_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spawn_internal.h; sourceTree = "<group>"; };
 		AD7A8D662B6A2C1900AD45DA /* privatebootstrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privatebootstrap.h; sourceTree = "<group>"; };
 		AD7A8D672B6A2C1900AD45DA /* spawn_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spawn_private.h; sourceTree = "<group>"; };
+		AD7A8F082B85DC0400AD45DA /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		AD7A8F092B85DC0400AD45DA /* entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = entitlements.plist; sourceTree = "<group>"; };
+		AD7A8F0A2B85DC0400AD45DA /* roothelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = roothelper.xcodeproj; sourceTree = "<group>"; };
+		AD7A8F0D2B85DC0400AD45DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AD7A8F0F2B85DC4C00AD45DA /* TSUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSUtil.m; sourceTree = "<group>"; };
+		AD7A8F4D2B85DC4D00AD45DA /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
+		AD7A8F4E2B85DC4D00AD45DA /* operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
+		AD7A8F4F2B85DC4D00AD45DA /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
+		AD7A8F502B85DC4D00AD45DA /* defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
+		AD7A8F512B85DC4D00AD45DA /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
+		AD7A8F522B85DC4D00AD45DA /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
+		AD7A8F532B85DC4D00AD45DA /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
+		AD7A8F542B85DC4D00AD45DA /* CoreServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreServices.h; sourceTree = "<group>"; };
+		AD7A8F552B85DC4D00AD45DA /* TSUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSUtil.h; sourceTree = "<group>"; };
+		AD7A8FB02B85E91D00AD45DA /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
+		AD7A8FB12B85E91D00AD45DA /* operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
+		AD7A8FB22B85E91D00AD45DA /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
+		AD7A8FB32B85E91D00AD45DA /* defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
+		AD7A8FB42B85E91D00AD45DA /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
+		AD7A8FB52B85E91D00AD45DA /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
+		AD7A8FB62B85E91D00AD45DA /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
+		AD7A8FBA2B85F3E700AD45DA /* fastPathSign */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = fastPathSign; path = roothelper/Exploits/fastPathSign/fastPathSign; sourceTree = "<group>"; };
 		ADD874832B58AF01004B5AF3 /* IOSurface_shared.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOSurface_shared.c; sourceTree = "<group>"; };
 		ADD874842B58AF01004B5AF3 /* IOSurface_shared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface_shared.h; sourceTree = "<group>"; };
 		ADD874862B58AF0B004B5AF3 /* kwrite_IOSurface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kwrite_IOSurface.c; sourceTree = "<group>"; };
@@ -273,6 +289,8 @@
 		847099792B1D855D003FA4ED = {
 			isa = PBXGroup;
 			children = (
+				AD7A8FBA2B85F3E700AD45DA /* fastPathSign */,
+				AD7A8F072B85DC0400AD45DA /* roothelper */,
 				84364F462B3C5D4600E90B58 /* libkrw0-dummy.deb */,
 				84438D582B261FBA00A1E407 /* basebin */,
 				84438D432B26090D00A1E407 /* sileo.deb */,
@@ -344,8 +362,8 @@
 		AD11E90F2B57A0A200529403 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				AD7A8FAF2B85E91D00AD45DA /* optool */,
 				AD7A8D582B6A2B0800AD45DA /* privateheaders */,
-				AD7A8D4D2B66F3F000AD45DA /* optool */,
 				AD7A8CD92B65D7E300AD45DA /* choma */,
 				AD7A8CAB2B6566E700AD45DA /* libs */,
 				AD11E94D2B57A19400529403 /* include.h */,
@@ -489,20 +507,6 @@
 			path = choma;
 			sourceTree = "<group>";
 		};
-		AD7A8D4D2B66F3F000AD45DA /* optool */ = {
-			isa = PBXGroup;
-			children = (
-				AD7A8D4E2B66F3F000AD45DA /* NSData+Reading.h */,
-				AD7A8D4F2B66F3F000AD45DA /* operations.h */,
-				AD7A8D502B66F3F000AD45DA /* headers.h */,
-				AD7A8D512B66F3F000AD45DA /* defines.h */,
-				AD7A8D522B66F3F000AD45DA /* NSData+Reading.m */,
-				AD7A8D532B66F3F000AD45DA /* operations.m */,
-				AD7A8D542B66F3F000AD45DA /* headers.m */,
-			);
-			path = optool;
-			sourceTree = "<group>";
-		};
 		AD7A8D582B6A2B0800AD45DA /* privateheaders */ = {
 			isa = PBXGroup;
 			children = (
@@ -530,6 +534,56 @@
 				AD7A8D642B6A2C1900AD45DA /* base.h */,
 			);
 			path = xpc;
+			sourceTree = "<group>";
+		};
+		AD7A8F072B85DC0400AD45DA /* roothelper */ = {
+			isa = PBXGroup;
+			children = (
+				AD7A8F542B85DC4D00AD45DA /* CoreServices.h */,
+				AD7A8F4C2B85DC4D00AD45DA /* optool */,
+				AD7A8F552B85DC4D00AD45DA /* TSUtil.h */,
+				AD7A8F0F2B85DC4C00AD45DA /* TSUtil.m */,
+				AD7A8F082B85DC0400AD45DA /* Makefile */,
+				AD7A8F092B85DC0400AD45DA /* entitlements.plist */,
+				AD7A8F0A2B85DC0400AD45DA /* roothelper.xcodeproj */,
+				AD7A8F0D2B85DC0400AD45DA /* main.m */,
+			);
+			path = roothelper;
+			sourceTree = "<group>";
+		};
+		AD7A8F0B2B85DC0400AD45DA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AD7A8F4C2B85DC4D00AD45DA /* optool */ = {
+			isa = PBXGroup;
+			children = (
+				AD7A8F4D2B85DC4D00AD45DA /* NSData+Reading.h */,
+				AD7A8F4E2B85DC4D00AD45DA /* operations.h */,
+				AD7A8F4F2B85DC4D00AD45DA /* headers.h */,
+				AD7A8F502B85DC4D00AD45DA /* defines.h */,
+				AD7A8F512B85DC4D00AD45DA /* NSData+Reading.m */,
+				AD7A8F522B85DC4D00AD45DA /* operations.m */,
+				AD7A8F532B85DC4D00AD45DA /* headers.m */,
+			);
+			path = optool;
+			sourceTree = "<group>";
+		};
+		AD7A8FAF2B85E91D00AD45DA /* optool */ = {
+			isa = PBXGroup;
+			children = (
+				AD7A8FB02B85E91D00AD45DA /* NSData+Reading.h */,
+				AD7A8FB12B85E91D00AD45DA /* operations.h */,
+				AD7A8FB22B85E91D00AD45DA /* headers.h */,
+				AD7A8FB32B85E91D00AD45DA /* defines.h */,
+				AD7A8FB42B85E91D00AD45DA /* NSData+Reading.m */,
+				AD7A8FB52B85E91D00AD45DA /* operations.m */,
+				AD7A8FB62B85E91D00AD45DA /* headers.m */,
+			);
+			path = optool;
 			sourceTree = "<group>";
 		};
 		FE0633B32B41CF4D00B94787 /* Classes */ = {
@@ -634,6 +688,12 @@
 			);
 			productRefGroup = 847099832B1D855D003FA4ED /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = AD7A8F0B2B85DC0400AD45DA /* Products */;
+					ProjectRef = AD7A8F0A2B85DC0400AD45DA /* roothelper.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				847099812B1D855D003FA4ED /* Bootstrap */,
@@ -647,6 +707,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84438D592B261FBA00A1E407 /* basebin in Resources */,
+				AD7A8FBB2B85F3E700AD45DA /* fastPathSign in Resources */,
 				84438D472B26090D00A1E407 /* sileo.deb in Resources */,
 				84438D4A2B26090D00A1E407 /* zebra.deb in Resources */,
 				84364F472B3C5D4600E90B58 /* libkrw0-dummy.deb in Resources */,
@@ -665,8 +726,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD7A8D572B66F3F000AD45DA /* headers.m in Sources */,
 				AD11E93A2B57A13300529403 /* krkw.c in Sources */,
+				AD7A8FB82B85E91D00AD45DA /* operations.m in Sources */,
 				AD11E9382B57A13300529403 /* perf.m in Sources */,
 				AD11E9342B57A13300529403 /* kread_kqueue_workloop_ctl.c in Sources */,
 				847099A32B1D868F003FA4ED /* Makefile in Sources */,
@@ -688,14 +749,14 @@
 				84438D4C2B2609B200A1E407 /* utils.m in Sources */,
 				FE0633AC2B41BC3D00B94787 /* CreditsView.swift in Sources */,
 				FE84597D2B44711F00DCB44E /* ButtonStyles.swift in Sources */,
-				AD7A8D562B66F3F000AD45DA /* operations.m in Sources */,
 				ADD874852B58AF01004B5AF3 /* IOSurface_shared.c in Sources */,
 				AD11E9312B57A13300529403 /* landa.c in Sources */,
 				84438D6F2B2CE5A300A1E407 /* AppEnabler.m in Sources */,
 				847099872B1D855D003FA4ED /* AppDelegate.m in Sources */,
 				AD11E9322B57A13300529403 /* smith.c in Sources */,
-				AD7A8D552B66F3F000AD45DA /* NSData+Reading.m in Sources */,
+				AD7A8FB72B85E91D00AD45DA /* NSData+Reading.m in Sources */,
 				847099982B1D855E003FA4ED /* main.m in Sources */,
+				AD7A8FB92B85E91D00AD45DA /* headers.m in Sources */,
 				84438D522B260FEB00A1E407 /* zstd_wrapper.m in Sources */,
 				AD11E9402B57A13D00529403 /* libdimentio.m in Sources */,
 				8470998A2B1D855D003FA4ED /* SceneDelegate.m in Sources */,
@@ -903,6 +964,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Bootstrap/include/libs",
+					"$(PROJECT_DIR)/roothelper/Exploits/fastPathSign/src/external/lib",
+					"$(PROJECT_DIR)/roothelper/external/lib",
 				);
 				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = "";
@@ -946,6 +1009,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Bootstrap/include/libs",
+					"$(PROJECT_DIR)/roothelper/Exploits/fastPathSign/src/external/lib",
+					"$(PROJECT_DIR)/roothelper/external/lib",
 				);
 				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = "";

@@ -62,4 +62,8 @@ void killAllForApp(const char* bundlePath);
 @property (nonatomic,readonly) NSURL *dataContainerURL;
 @end
 
+NSString* BootstrapPath();
+
+NSString* BootstrapAppPath();
+
 #endif /* utils_h */

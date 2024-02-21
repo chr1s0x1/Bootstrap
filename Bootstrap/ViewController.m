@@ -420,13 +420,12 @@ void bootstrapAction()
         
         
         [AppDelegate addLogText:Localized(@"**** Starting Bootstrap Process ****")];
-        STRAPLOG("\n\n\n **** Starting Bootstrap Process ****\n\n\n");
     
         const char* argv[] = {NSBundle.mainBundle.executablePath.fileSystemRepresentation, "bootstrap", NULL};
-        int status = spawn(argv[0], argv, environ, ^(char* outstr, int length){
+        int status = spawn(argv[0], argv, environ, ^(char* outstr, int length) {
             NSString *str = [[NSString alloc] initWithBytes:outstr length:length encoding:NSASCIIStringEncoding];
             [AppDelegate addLogText:str];
-        }, ^(char* errstr, int length){
+        }, ^(char* errstr, int length) {
             NSString *str = [[NSString alloc] initWithBytes:errstr length:length encoding:NSASCIIStringEncoding];
             [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: %@\n",str]];
         });
@@ -491,7 +490,7 @@ void bootstrapAction()
      
         if(runSBINJECTOR == NO) {
             if(NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 17) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Rerun") message:Localized(@"Stage 1 is complete. After your device resprings (will auto respring in 7 secs), rerun BootStrap G3n3sis again to enable SpringBoard tweaks") preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:Localized(@"Rerun") message:Localized(@"Stage 1 is complete. After your device resprings (will auto respring in 7 secs), install Ellekit from Sileo, then rerun BootStrap G3n3sis again to enable SpringBoard tweaks") preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                     [generator impactOccurred];
                     [AppDelegate addLogText:Localized(@"respring now...")]; sleep(7);
@@ -520,28 +519,24 @@ void bootstrapAction()
             
         } else {
             [AppDelegate addLogText:Localized(@"*** Running Stage 2 ***")];
-            // we have to make sure we spawn ourselves as root, otherwise copying over launchd & SpringBoard will fail
-            //const char *execpath = NSBundle.mainBundle.executablePath.fileSystemRepresentation;
-            //int statusinject = spawnRoot(@(execpath), @[@"injection"], &log, &err);
-            const char* argv[] = {NSBundle.mainBundle.executablePath.fileSystemRepresentation, "injection", NULL};
-            int statusinject = spawn(argv[0], argv, environ, ^(char* outstr, int length){
-                NSString *str = [[NSString alloc] initWithBytes:outstr length:length encoding:NSASCIIStringEncoding];
-                [AppDelegate addLogText:str];
-            }, ^(char* errstr, int length){
-                NSString *str = [[NSString alloc] initWithBytes:errstr length:length encoding:NSASCIIStringEncoding];
-                [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: %@\n",str]];
-            });
-
-            // bool replaced = enable_SBInjection(kfd, 1); // initiate SpringBoard Injection
-            if(statusinject != 0) {
-                [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup SpringBoard Injection. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
-                [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: SpringBoard Injection setup failed %d: \n%@\n%@", statusinject, log, err]];
+            
+            // status = spawnRoot([NSBundle.mainBundle.bundlePath stringByAppendingString:@"RootHelper"], @[@"install", @"", @""], nil, nil);
+            status = spawnRoot([NSBundle.mainBundle.bundlePath stringByAppendingString:@"RootHelper"], @[@"install", @"launchd", @""], &log, &err);
+            if(status != 0) {
+                [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup SpringBoard Environment. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
+                [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: SpringBoard Environment setup failed: \n%@\n%@", log, err]];
+                return;
+            }
+            bool replaced = enable_SBInjection(kfd, 1); // initiate SpringBoard Injection
+            if(!replaced) {
+                [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to patch launchd, please reboot and try again"] title:Localized(@"Error")];
+                [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: Unable to hack launchd"]];
                 return;
             } else {
                 [AppDelegate addLogText:Localized(@"SprinBoard Injection has been set")];
                 remove(jbroot(@"/.enableSB").UTF8String);
                 [[NSFileManager defaultManager] createFileAtPath:jbroot(@"/.enabledSB") contents:nil attributes:nil];
-                UIAlertController *completed = [UIAlertController alertControllerWithTitle:Localized(@"Complete") message:Localized(@"Your device has been Bootstrapped and SpringBoard Injection has been enabled. After your device Userspace Reboots (in 7 secs), please install Ellekit in Sileo from the RootHide Repo. Enjoy!") preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertController *completed = [UIAlertController alertControllerWithTitle:Localized(@"Complete") message:Localized(@"Your device has been Bootstrapped and SpringBoard Injection has been enabled. After your device Userspace Reboots (in 7 secs), Enjoy your tweaks!") preferredStyle:UIAlertControllerStyleAlert];
                 [completed addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                     [generator impactOccurred];
                     [AppDelegate addLogText:Localized(@"Userspace rebooting..")]; sleep(7);
@@ -569,11 +564,11 @@ void unbootstrapAction()
 
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [AppDelegate showHudMsg:Localized(@"Uninstalling")];
-
             NSString* log=nil;
             NSString* err=nil;
             if(access(jbroot(@"/.enableSB").fileSystemRepresentation, R_OK) == 0) remove(jbroot(@"/.enableSB").fileSystemRepresentation);
             remove(jbroot(@"/.enabledSB").fileSystemRepresentation);
+            spawnRoot([NSBundle.mainBundle.bundlePath stringByAppendingString:@"RootHelper"], @[@"uninstall", @"", @""], &log, &err);
             int status = spawnRoot(NSBundle.mainBundle.executablePath, @[@"unbootstrap"], &log, &err);
             
             [AppDelegate dismissHud];

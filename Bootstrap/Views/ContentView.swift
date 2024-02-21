@@ -262,4 +262,12 @@ struct ContentView: View {
             }
         }
     }
+    
+    private func FetchLog() {
+        guard let AttributedText = LogStream.shared.outputString.copy() as? NSAttributedString else {
+            LogItems = ["Error Getting Log!"]
+            return
+        }
+        LogItems = AttributedText.string.split(separator: "\n")
+    }
 }

@@ -47,7 +47,9 @@ You'll need MacOS to build, as you require Xcode. Simply having Xcode Command Li
 
 The latest version of TrollStore is required as the bootstrap is built around the CoreTrust bug. Developer mode also needs to be enabled, so use TrollStore version 2.0.9 or later to automatically enable it.
 
-Once you open the Bootstrap app, press Bootstrap. This will install the necessary apps and files.
+Once you open the Bootstrap app, press "Install". This will install the necessary apps and files, then auto respring your device (Step 1). To enable SpringBoard Injection (Step 2), reopen Bootstrap then press "Bootstrap". Your device will then automatically userspace reboot, then you're done!
+
+**You may need to rebuild the app icon cache after the SpringBoard Injection process to re-enable Sileo & Zebra and prevent them from not opening. This can easily be done in BootStrap in it's settings.**
 
 You can add various sources and install tweaks through Sileo, like other jailbreaks. You may need to convert tweaks to be roothide compatible if they aren't already converted or developed for this bootstrap.
 

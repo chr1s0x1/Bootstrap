@@ -1,5 +1,6 @@
 
 #include <Foundation/Foundation.h>
+#include "AppList.h"
 
 #include <spawn.h>
 #include <sys/sysctl.h>
@@ -493,3 +494,16 @@ NSString* getBootSession()
     
     return @(uuid);
 }
+
+NSString* BootstrapPath()
+{
+    AppList* bstrpApp = [AppList appWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
+    if(!bstrpApp) return nil;
+    return bstrpApp.bundleURL.path;
+}
+
+NSString* BootstrapAppPath()
+{
+    return [BootstrapPath() stringByAppendingPathComponent:@"Bootstrap-G.app"];
+}
+
