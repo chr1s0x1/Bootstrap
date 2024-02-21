@@ -21,9 +21,7 @@
 #import <choma/FileStream.h>
 #import <choma/Host.h>
 #import "TSUtil.h"
-#import "optool/operations.h"
-
-#import <SpringBoardServices/SpringBoardServices.h>
+#include "optool/operations.h"
 
 #define SYSLOG(fmt, ...) do { fmt[0];\
 openlog("bootstrap",LOG_PID,LOG_AUTH);\
