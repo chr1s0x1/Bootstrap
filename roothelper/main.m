@@ -117,7 +117,7 @@ NSString* BootStrapPath()
 
 NSString* BootstrapappPath()
 {
-    return [BootStrapPath() stringByAppendingPathComponent:@"Bootstrap-G.app"];
+    return [BootStrapPath() stringByAppendingPathComponent:@"Bootstrap.app"];
 }
 
 int runLdid(NSArray* args, NSString** output, NSString** errorOutput)
@@ -406,26 +406,30 @@ int main(int argc, char *argv[], char *envp[]) {
         BOOL directory = YES;
         loadMCMFramework();
         
+        if(BootStrapPath() == nil) {
+            printf("[ROOT-HELPER] ERR: we're unable to locate the Bootstrap app!");
+            exit(-1);
+        }
+        
         NSString* action = [NSString stringWithUTF8String:argv[1]];
         NSString* method = [NSString stringWithUTF8String:argv[2]];
         
-        bool doxpc = strcmp(method.UTF8String, "launchd") == 0 ? true:false;
+        bool doxpc = strcmp(method.UTF8String, "xpcproxy") == 0 ? true:false;
         
         if([action isEqual:@"install"]) {
             
-            NSString* Bootstrap_patchloc = [BootstrapappPath() stringByAppendingString:@"BSTRPFiles"];
+            NSString* Bootstrap_patchloc = [BootstrapappPath() stringByAppendingPathComponent:@"BSTRPFiles"];
             NSString* xpc_origlocation = @"/usr/libexec/xpcproxy";
             NSString* xpc_new_location = jbroot(@"xpcproxy");
             
             NSString* lcd_origlocation = @"/sbin/launchd";
             NSString* new_lcd_location = jbroot(@"launchd");
             
-            mkdir(Bootstrap_patchloc.UTF8String, 0775);
             if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
                 [fm createDirectoryAtPath:Bootstrap_patchloc withIntermediateDirectories:NO attributes:nil error:nil];
                 if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
                     printf("[ROOT-HELPER] ERR: unable to create strap folder!\n");
-                    exit(-1);
+                    exit(-2);
                 }
             }
 
@@ -438,7 +442,7 @@ int main(int argc, char *argv[], char *envp[]) {
             }
             if(!setup) {
                 printf("[ROOT-HELPER] ERR: SpringBoard setup failed!\n");
-                exit(-2);
+                exit(-3);
             }
             
             printf("[ROOT-HELPER] SpringBoard setup complete, we're done here!\n");

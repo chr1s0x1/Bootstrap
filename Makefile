@@ -45,5 +45,3 @@ before-package::
 after-install::
 # TODO: just add build.sh in here 
 	install.exec 'uiopen -b com.roothide.Bootstrap'
-SUBPROJECTS += roothelper
-include $(THEOS_MAKE_PATH)/aggregate.mk

@@ -504,6 +504,6 @@ NSString* BootstrapPath()
 
 NSString* BootstrapAppPath()
 {
-    return [BootstrapPath() stringByAppendingPathComponent:@"Bootstrap-G.app"];
+    return [BootstrapPath() stringByAppendingPathComponent:@"Bootstrap.app"];
 }
 

@@ -272,11 +272,11 @@ int enable_SBInjection(u64 kfd, int method) {
     
     /* file handling & location variables */
     NSFileManager *FM = NSFileManager.defaultManager;
-    NSString* Bootstrap_patchloc = [BootstrapAppPath() stringByAppendingString:@"BSTRPFiles"];
+    NSString* Bootstrap_patchloc = [BootstrapAppPath() stringByAppendingPathComponent:@"BSTRPFiles"];
     NSString* xpc_origlocation = @"/usr/libexec/xpcproxy";
-    NSString* xpc_new_location = [Bootstrap_patchloc stringByAppendingString:@"xpcproxy"];
+    NSString* xpc_new_location = [Bootstrap_patchloc stringByAppendingPathComponent:@"xpcproxy"];
     NSString* lcd_origlocation = @"/sbin/launchd";
-    NSString* new_lcd_location = [Bootstrap_patchloc stringByAppendingString:@"launchd"];
+    NSString* new_lcd_location = [Bootstrap_patchloc stringByAppendingPathComponent:@"launchd"];
     
     /*
      We're gonna comment this out since I would want the fakes to be signed upon a reboot to ensure no signing issues + reboot obviously reverts changes

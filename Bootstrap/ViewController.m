@@ -520,8 +520,12 @@ void bootstrapAction()
         } else {
             [AppDelegate addLogText:Localized(@"*** Running Stage 2 ***")];
             
+            ASSERT(BootstrapPath() != nil);
+            ASSERT([[NSFileManager defaultManager] fileExistsAtPath:BootstrapAppPath()]);
+            ASSERT([[NSFileManager defaultManager] fileExistsAtPath:[BootstrapAppPath() stringByAppendingPathComponent:@"RootHelper"]]);
+            
             // status = spawnRoot([NSBundle.mainBundle.bundlePath stringByAppendingString:@"RootHelper"], @[@"install", @"", @""], nil, nil);
-            status = spawnRoot([NSBundle.mainBundle.bundlePath stringByAppendingString:@"RootHelper"], @[@"install", @"launchd", @""], &log, &err);
+            status = spawnRoot([BootstrapAppPath() stringByAppendingPathComponent:@"RootHelper"], @[@"install", @"launchd", @""], &log, &err);
             if(status != 0) {
                 [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup SpringBoard Environment. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
                 [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: SpringBoard Environment setup failed: \n%@\n%@", log, err]];
