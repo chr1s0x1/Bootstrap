@@ -2,7 +2,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/roothide/Bootstrap?style=social)](https://github.com/roothide/Bootstrap/stargazers)
 
-A full featured bootstrap for iOS 14.0-17.0 A8-A17 & M1+M2 using the arm64e deb architecture providing amazing support for jailbreak detection. (Currently only tested tested on iOS 15.0-17.0)
+A full featured bootstrap w/ springboard injection for iOS 15.0-16.6.1 A8-A17 & M1+M2 using the arm64e deb architecture providing amazing support for jailbreak detection. (Currently only tested tested on iOS 15.0-17.0)
 
 ##### *WARNING:* By using this software, you take full responsibility for what you do with it. Any modification to your device may cause irreparable damage.
 
