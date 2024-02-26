@@ -23,18 +23,8 @@
 #import "TSUtil.h"
 #include "optool/operations.h"
 
-#define SYSLOG(fmt, ...) do { fmt[0];\
-openlog("bootstrap",LOG_PID,LOG_AUTH);\
-syslog(LOG_DEBUG, fmt, ## __VA_ARGS__);\
-closelog();\
-} while(0)
-
-#define STRAPLOG(fmt, ...) do { fmt[0];\
-SYSLOG(fmt, ## __VA_ARGS__);\
-fprintf(stdout, [NSString stringWithFormat:@fmt, ## __VA_ARGS__].UTF8String);\
-fprintf("[ROOT-HELPER]", stdout, "\n");\
-fflush(stdout);\
-} while(0)
+#define RootLog(what)\
+NSLog(@"[ROOT-HELPER]"what"\n")
 
 #define JB_ROOT_PREFIX ".jbroot-"
 #define JB_RAND_LENGTH  (sizeof(uint64_t)*sizeof(char)*2)
@@ -210,7 +200,7 @@ int signAdhoc(NSString *filePath, NSString *entitlements) // lets just assume ld
 //                signArg = [signArg stringByAppendingString:@"/sbin/launchd"];
 //            }
         }
-        NSLog(@"roothelper: running ldid\n");
+        NSLog(@"[ROOT-HELPER][ADHOC]: running ldid\n");
         int ldidRet = runLdid(@[signArg, filePath], nil, &errorOutput);
 //        if (entitlementsPath) {
 //            [[NSFileManager defaultManager] removeItemAtPath:entitlementsPath error:nil];
@@ -240,15 +230,15 @@ int inject_dylib_in_binary(NSString* dylibPath, NSString* binarypath) {
     
     NSFileManager* FM = [NSFileManager defaultManager];
     if(![FM fileExistsAtPath:dylibPath] || ![FM fileExistsAtPath:binarypath]) {
-        printf("[ROOT-HELPER][Dylib Inject] ERR: invalid path for dylib/binary\n");
+        NSLog(@"[ROOT-HELPER][Dylib Inject] ERR: invalid path for dylib/binary\n");
         return -1;
     }
     
-    printf("[Dylib Inject] Injecting (%s) into (%s)\n", (dylibPath).UTF8String, binarypath.UTF8String);
+    NSLog(@"[Dylib Inject] Injecting (%s) into (%s)\n", (dylibPath).UTF8String, binarypath.UTF8String);
     FILE* fp = fopen(binarypath.UTF8String, "r+");
     
     if(!fp) {
-        printf("[Dylib Inject] ERR: unable to read binary\n");
+        NSLog(@"[Dylib Inject] ERR: unable to read binary\n");
         fclose(fp);
         return -2;
     }
@@ -264,14 +254,14 @@ int inject_dylib_in_binary(NSString* dylibPath, NSString* binarypath) {
     
     bool injected = insertLoadEntryIntoBinary(dylibPath, data, mh, LC_LOAD_DYLIB);
     if(!injected) {
-        printf("[Dylib Inject] ERR: unable to inject (%s) into (%s)!\n", dylibPath.UTF8String, binarypath.UTF8String);
+        NSLog(@"[Dylib Inject] ERR: unable to inject (%s) into (%s)!\n", dylibPath.UTF8String, binarypath.UTF8String);
         fclose(fp);
         return -3;
     }
     
     ftruncate(fileno(fp), file_size);
     
-    printf("[Dylib Inject] (%s) was injected into (%s) succesfully\n", dylibPath.UTF8String, binarypath.UTF8String);
+    NSLog(@"[Dylib Inject] (%s) was injected into (%s) succesfully\n", dylibPath.UTF8String, binarypath.UTF8String);
     fclose(fp);
     return 0;
 }
@@ -294,15 +284,15 @@ bool Setup_Injection(NSString* injectloc, NSString* newinjectloc, bool forxpc) {
     NSString* sbents = [BootstrapappPath() stringByAppendingPathComponent:@"include/libs/SBtools/SpringBoardEnts.plist"];
     NSString* SBreplaceBinary = [BootstrapappPath() stringByAppendingPathComponent:@"include/libs/SBtools/SBTool"];
     
-    printf("[Setup Inject] setting up environment for SB Injection\n");
+    NSLog(@"[Setup Inject] setting up environment for SB Injection\n");
     
     if([FM fileExistsAtPath:newinjectloc] == 0) {
-        printf("[Setup Inject] NOTICE: (%s) already exists, we're gonna go ahead and resign then return..\n", newinjectloc.UTF8String);
+        NSLog(@"[Setup Inject] NOTICE: (%s) already exists, we're gonna go ahead and resign then return..\n", newinjectloc.UTF8String);
         goto resign;
     }
     
     if(access(injectloc.UTF8String, F_OK) != 0) {
-        printf("[Setup Inject] ERR: we can't access %s\n", injectloc.UTF8String);
+        NSLog(@"[Setup Inject] ERR: we can't access %s\n", injectloc.UTF8String);
         return false;
     }
     
@@ -310,11 +300,11 @@ bool Setup_Injection(NSString* injectloc, NSString* newinjectloc, bool forxpc) {
     
     kr = [FM copyItemAtPath:injectloc toPath:newinjectloc error:&errhandle];
     if(kr != KERN_SUCCESS) {
-        printf("[Setup Inject] ERR: unable to copy xpc/launchd to path! error-string: (%s)\n", [[errhandle localizedDescription] UTF8String]);
+        NSLog(@"[Setup Inject] ERR: unable to copy xpc/launchd to path! error-string: (%s)\n", [[errhandle localizedDescription] UTF8String]);
         return false;
     }
     
-    printf("[Setup Inject] copied xpc/launchd binary at (%s\n)", newinjectloc.UTF8String);
+    NSLog(@"[Setup Inject] copied xpc/launchd binary at (%s\n)", newinjectloc.UTF8String);
     
     
 resign:;
@@ -323,7 +313,7 @@ resign:;
     
     kr = [FM copyItemAtPath:SpringBoardPath toPath:jbroot(SpringBoardPath) error:&errhandle];
     if(kr != KERN_SUCCESS) {
-        printf("[Setup Inject] ERR: unable to copy SpringBoard to jbroot path, error-string: (%s)\n", [[errhandle localizedDescription] UTF8String]);
+        NSLog(@"[Setup Inject] ERR: unable to copy SpringBoard to jbroot path, error-string: (%s)\n", [[errhandle localizedDescription] UTF8String]);
         goto setupfailed;
     }
     
@@ -331,7 +321,7 @@ resign:;
     assert(![FM fileExistsAtPath:[NewSBPath stringByAppendingPathComponent:@"SpringBoard"]]);
     kr = [FM copyItemAtPath:SBreplaceBinary toPath:[NewSBPath stringByAppendingPathComponent:@"SpringBoard"] error:&errhandle];
     if(kr != KERN_SUCCESS) {
-        printf("[Setup Inject] ERR: unable to replace SB binary with our own, error-string: (%s)\n", [[errhandle localizedDescription] UTF8String]);
+        NSLog(@"[Setup Inject] ERR: unable to replace SB binary with our own, error-string: (%s)\n", [[errhandle localizedDescription] UTF8String]);
         goto setupfailed;
     }
     
@@ -339,11 +329,11 @@ resign:;
     
     returnval = spawnRoot(ldidPath, @[@"-S", sbents, [NewSBPath stringByAppendingPathComponent:@"SpringBoard"]], nil, nil);
     if(returnval != 0) {
-        printf("[Setup Inject] ERR: unable to sign fake SpringBoard binary (%d)\n", returnval);
+        NSLog(@"[Setup Inject] ERR: unable to sign fake SpringBoard binary (%d)\n", returnval);
         goto setupfailed;
     }
     
-    printf("[Setup Inject] fake SpringBoard was been signed\n");
+    NSLog(@"[Setup Inject] fake SpringBoard was been signed\n");
     
     // we're gonna sign them with the respective entitlements & fastpathsign
     if(forxpc) {
@@ -352,43 +342,43 @@ resign:;
         returnval = signAdhoc(newinjectloc, launchdents); // spawnRoot(ldidPath, @[@"-S", launchdents, newinjectloc], nil, nil);
     }
     if(returnval != 0) {
-        printf("[Setup Inject] ERR: an issue occured signing (%s) - (%d)\n", newinjectloc.UTF8String, returnval);
+        NSLog(@"[Setup Inject] ERR: an issue occured signing (%s) - (%d)\n", newinjectloc.UTF8String, returnval);
         return false;
     }
     
     returnval = spawnRoot(fastSignPath, @[@"-i", newinjectloc, @"-r", @"-o", newinjectloc], &log, &err);
     if(returnval != 0) {
-        printf("[Setup Inject] ERR: an issues occured fastpath signing (%s): \n\n %s \n\n %s\n", newinjectloc.UTF8String, log.UTF8String, err.UTF8String);
+        NSLog(@"[Setup Inject] ERR: an issues occured fastpath signing (%s): \n\n %s \n\n %s\n", newinjectloc.UTF8String, log.UTF8String, err.UTF8String);
         return false;
     }
     
-    printf("[Setup Inject] (%s) - was signed successfully\n", newinjectloc.UTF8String);
+    NSLog(@"[Setup Inject] (%s) - was signed successfully\n", newinjectloc.UTF8String);
     
     // 4) inject dylibs into fake signed xpc/launchd + fake signed SpringBoard
     
     if(!forxpc) {
         returnval = inject_dylib_in_binary([BootstrapappPath() stringByAppendingPathComponent:@"include/libs/launchdhooker.dylib"], newinjectloc);
         if(returnval != 0) {
-            printf("[Setup Inject] ERR: unable to inject launchdhooker into fake launchd (%d)\n", returnval);
+            NSLog(@"[Setup Inject] ERR: unable to inject launchdhooker into fake launchd (%d)\n", returnval);
             return false;
         }
     } else { // TODO: Gotta create the fake xpcproxy hooker
         returnval = inject_dylib_in_binary([BootstrapappPath() stringByAppendingPathComponent:@"include/libs/xpchooker.dylib"], newinjectloc);
         if(returnval != 0) {
-            printf("[Setup Inject] ERR: unable to inject xpchooker into fake xpcproxy (%d)\n", returnval);
+            NSLog(@"[Setup Inject] ERR: unable to inject xpchooker into fake xpcproxy (%d)\n", returnval);
             return false;
         }
     }
     
-    printf("[Setup Inject] dylib has been injected into (%s) succesfully", injectloc.UTF8String);
+    NSLog(@"[Setup Inject] dylib has been injected into (%s) succesfully", injectloc.UTF8String);
     
     returnval = inject_dylib_in_binary([BootstrapappPath() stringByAppendingPathComponent:@"include/libs/SBHooker.dylib"], [NewSBPath stringByAppendingPathComponent:@"SpringBoard"]);
     if(returnval != 0) {
-        printf("[Setup Inject] ERR: unable to inject SBHooker into fake SpringBoard (%d)\n", returnval);
+        NSLog(@"[Setup Inject] ERR: unable to inject SBHooker into fake SpringBoard (%d)\n", returnval);
         return false;
     }
     
-    printf("[Setup Inject] SBHooker has been injected into the fake SpringBoard, we're done here\n");
+    NSLog(@"[Setup Inject] SBHooker has been injected into the fake SpringBoard, we're done here\n");
     return true;
     
 setupfailed:;
@@ -400,14 +390,14 @@ setupfailed:;
 int main(int argc, char *argv[], char *envp[]) {
     @autoreleasepool {
         
-        printf("[ROOT-HELPER] RootHelper called! initiating..\n");
+        NSLog(@"[ROOT-HELPER] RootHelper called! initiating..\n");
         
         NSFileManager *fm = [NSFileManager defaultManager];
         BOOL directory = YES;
         loadMCMFramework();
         
         if(BootStrapPath() == nil) {
-            printf("[ROOT-HELPER] ERR: we're unable to locate the Bootstrap app!");
+            NSLog(@"[ROOT-HELPER] ERR: we're unable to locate the Bootstrap app!\n");
             exit(-1);
         }
         
@@ -426,14 +416,17 @@ int main(int argc, char *argv[], char *envp[]) {
             NSString* new_lcd_location = jbroot(@"launchd");
             
             if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
-                [fm createDirectoryAtPath:Bootstrap_patchloc withIntermediateDirectories:NO attributes:nil error:nil];
+                mkdir([BootstrapappPath() stringByAppendingPathComponent:@"BSTRPFiles"].UTF8String, 0555);
                 if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
-                    printf("[ROOT-HELPER] ERR: unable to create strap folder!\n");
-                    exit(-2);
+                    [fm createDirectoryAtPath:[BootstrapappPath() stringByAppendingPathComponent:@"BSTRPFiles"] withIntermediateDirectories:NO attributes:nil error:nil];
+                    if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
+                        NSLog(@"[ROOT-HELPER] ERR: unable to create strap folder!\n");
+                        exit(-2);
+                    }
                 }
             }
 
-            printf("[ROOT-HELPER] Strap folder created\n");
+            NSLog(@"[ROOT-HELPER] Strap folder created\n");
             bool setup;
             if(doxpc) {
                 setup = Setup_Injection(xpc_origlocation, xpc_new_location, doxpc);
@@ -441,15 +434,15 @@ int main(int argc, char *argv[], char *envp[]) {
                 setup = Setup_Injection(lcd_origlocation, new_lcd_location, doxpc);
             }
             if(!setup) {
-                printf("[ROOT-HELPER] ERR: SpringBoard setup failed!\n");
+                NSLog(@"[ROOT-HELPER] ERR: SpringBoard setup failed!\n");
                 exit(-3);
             }
             
-            printf("[ROOT-HELPER] SpringBoard setup complete, we're done here!\n");
+            NSLog(@"[ROOT-HELPER] SpringBoard setup complete, we're done here!\n");
             exit(0);
             
         } else if ([action isEqual:@"uninstall"]) {
-            printf("[ROOT-HELPER] Uninstalling..");
+            NSLog(@"[ROOT-HELPER] Uninstalling..\n");
             if(doxpc) {
                 remove(jbroot(@"xpcproxy").UTF8String);
             } else {
@@ -459,7 +452,7 @@ int main(int argc, char *argv[], char *envp[]) {
             [fm removeItemAtPath:jbroot(@"/System/Library/CoreServices/SpringBoard.app") error:nil];
             remove(jbroot(@"/System/Library/CoreServices/SpringBoard.app/").UTF8String); // ensure that it's removed
             
-            printf("[ROOT-HELPER] Everything uninstalled\n");
+            NSLog(@"[ROOT-HELPER] Everything uninstalled\n");
             exit(0);
         }
         

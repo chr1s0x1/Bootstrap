@@ -967,7 +967,7 @@
 					"$(PROJECT_DIR)/roothelper/Exploits/fastPathSign/src/external/lib",
 					"$(PROJECT_DIR)/roothelper/external/lib",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.0g;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.roothide.Bootstrap-g3n3sis";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1012,7 +1012,7 @@
 					"$(PROJECT_DIR)/roothelper/Exploits/fastPathSign/src/external/lib",
 					"$(PROJECT_DIR)/roothelper/external/lib",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.0g;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.roothide.Bootstrap-g3n3sis";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -439,7 +439,6 @@ void bootstrapAction()
             if(strcmp(Exploit, "KFDIO") != 0) {
                 mem = Hog_memory();
                 if(mem == -1) {
-                    STRAPLOG("[warning]: Memory hogging failed, but will try kernel exploit anyway");
                     [AppDelegate addLogText:Localized(@"[warning]: Memory hogging failed, but will try kerel exploit anyway")];
                     sleep(3);
                 } else {
@@ -457,7 +456,6 @@ void bootstrapAction()
                 return;
             }
             
-            STRAPLOG("kfd success: %llx", kfd);
             [AppDelegate addLogText:[NSString stringWithFormat:@"KFD ran succesfully: %llx", kfd]];
             if(!running_IO) {free_memory(mem);}
         }
@@ -515,19 +513,17 @@ void bootstrapAction()
         [AppDelegate addLogText:Localized(@"respringing now...")]; sleep(7);
 
         status = spawnBootstrap((char*[]){"/usr/bin/sbreload", NULL}, &log, &err);
-        if(status!=0) [AppDelegate showMesage:[NSString stringWithFormat:@"%@\n\nstderr:\n%@",log,err] title:[NSString stringWithFormat:@"code(%d)",status]];
+        if(status!=0) {[AppDelegate showMesage:[NSString stringWithFormat:@"%@\n\nstderr:\n%@",log,err] title:[NSString stringWithFormat:@"code(%d)",status]];}
             
         } else {
             [AppDelegate addLogText:Localized(@"*** Running Stage 2 ***")];
             
-            ASSERT(BootstrapPath() != nil);
-            ASSERT([[NSFileManager defaultManager] fileExistsAtPath:BootstrapAppPath()]);
-            ASSERT([[NSFileManager defaultManager] fileExistsAtPath:[BootstrapAppPath() stringByAppendingPathComponent:@"RootHelper"]]);
+            ASSERT([[NSFileManager defaultManager] fileExistsAtPath:BootstrapAppPath()]); 
             
-            // status = spawnRoot([NSBundle.mainBundle.bundlePath stringByAppendingString:@"RootHelper"], @[@"install", @"", @""], nil, nil);
+            // spawn RootHelper to handle the environment setup otherwise copying launchd & springboard will fail
             status = spawnRoot([BootstrapAppPath() stringByAppendingPathComponent:@"RootHelper"], @[@"install", @"launchd", @""], &log, &err);
             if(status != 0) {
-                [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup SpringBoard Environment. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
+                [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup the SpringBoard Environment. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
                 [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: SpringBoard Environment setup failed: \n%@\n%@", log, err]];
                 return;
             }
@@ -540,7 +536,7 @@ void bootstrapAction()
                 [AppDelegate addLogText:Localized(@"SprinBoard Injection has been set")];
                 remove(jbroot(@"/.enableSB").UTF8String);
                 [[NSFileManager defaultManager] createFileAtPath:jbroot(@"/.enabledSB") contents:nil attributes:nil];
-                UIAlertController *completed = [UIAlertController alertControllerWithTitle:Localized(@"Complete") message:Localized(@"Your device has been Bootstrapped and SpringBoard Injection has been enabled. After your device Userspace Reboots (in 7 secs), Enjoy your tweaks!") preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertController *completed = [UIAlertController alertControllerWithTitle:Localized(@"Complete") message:Localized(@"Your device has been Bootstrapped and SpringBoard Injection has been enabled. Your device will now Userspace Reboot (in 7 secs). Enjoy your tweaks!") preferredStyle:UIAlertControllerStyleAlert];
                 [completed addAction:[UIAlertAction actionWithTitle:Localized(@"Ok") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                     [generator impactOccurred];
                     [AppDelegate addLogText:Localized(@"Userspace rebooting..")]; sleep(7);

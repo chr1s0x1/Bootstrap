@@ -64,6 +64,8 @@ fi
 
 ./Bootstrap/include/choma/output/tests/ct_bypass -i roothelper/.theos/obj/debug/RootHelper -r -o roothelper/RootHelper
 
+ldid -Sroothelper/entitlements.plist -Cadhoc roothelper/RootHelper
+
 if [ -e roothelper/RootHelper ]
 then
 rm -rf roothelper/.theos
