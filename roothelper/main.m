@@ -12,7 +12,7 @@
 #import <spawn.h>
 #import <objc/runtime.h>
 #include <sys/syslog.h>
-
+#include <sys/types.h>
 
 #import "codesign.h"
 #import "coretrust_bug.h"

@@ -521,7 +521,7 @@ void bootstrapAction()
             ASSERT([[NSFileManager defaultManager] fileExistsAtPath:BootstrapAppPath()]); 
             
             // spawn RootHelper to handle the environment setup otherwise copying launchd & springboard will fail
-            status = spawnRoot([BootstrapAppPath() stringByAppendingPathComponent:@"RootHelper"], @[@"install", @"launchd", @""], &log, &err);
+            status = spawnRoot([[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"RootHelper"], @[@"install", @"launchd", @""], &log, &err);
             if(status != 0) {
                 [AppDelegate showMesage:[NSString stringWithFormat:@"Bootstrap was unable to setup the SpringBoard Environment. Please reboot and try again. \n(%@)\n (%@)", log, err] title:Localized(@"Error")];
                 [AppDelegate addLogText:[NSString stringWithFormat:@"ERR: SpringBoard Environment setup failed: \n%@\n%@", log, err]];
