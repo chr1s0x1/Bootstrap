@@ -394,6 +394,7 @@ void bootstrapAction()
         return;
     }
 
+    
     UIImpactFeedbackGenerator* generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleSoft];
     [generator impactOccurred];
 
@@ -516,6 +517,9 @@ void bootstrapAction()
         if(status!=0) {[AppDelegate showMesage:[NSString stringWithFormat:@"%@\n\nstderr:\n%@",log,err] title:[NSString stringWithFormat:@"code(%d)",status]];}
             
         } else {
+            
+            [AppDelegate showHudMsg:Localized(@"SB Injecting..")];
+            
             [AppDelegate addLogText:Localized(@"*** Running Stage 2 ***")];
             
             ASSERT([[NSFileManager defaultManager] fileExistsAtPath:BootstrapAppPath()]); 

@@ -417,7 +417,7 @@ int main(int argc, char *argv[], char *envp[]) {
             
             if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
                 mkdir([BootstrapappPath() stringByAppendingPathComponent:@"BSTRPFiles"].UTF8String, 0555);
-                if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
+                if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {      // we'll try to make the folder twice
                     [fm createDirectoryAtPath:[BootstrapappPath() stringByAppendingPathComponent:@"BSTRPFiles"] withIntermediateDirectories:NO attributes:nil error:nil];
                     if(![fm fileExistsAtPath:Bootstrap_patchloc isDirectory:&directory]) {
                         NSLog(@"[ROOT-HELPER] ERR: unable to create strap folder!\n");

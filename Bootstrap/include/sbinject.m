@@ -257,7 +257,7 @@ int enable_SBInjection(u64 kfd, int method) {
     STRAPLOG("[SB Injection] enabling SB Injection..");
     
     /* address variables */
-    _offsets_init(); // initiate offsets - may not be needed now >:)
+    _offsets_init(); // initiate offsets
     init_krw(kfd);
     int fd;
     int fd2;
@@ -463,7 +463,7 @@ resignL2:;
     return true;
       */
         
-xpc:; // xpc method *should* work on ios 15 & 16, we can use this for now-
+xpc:; // xpc method *should* work on ios 15 & 16, we can use this for now- (UPDATE: DISREGARD FOR NOW, THIS CODE WILL NEVER RUN)
         
     STRAPLOG("[SB Injection] executing xpcproxy patch");
         
